@@ -1,0 +1,15 @@
+html {
+  font-family: "Roboto Serif", sans-serif;
+}
+
+body {
+  padding: 1.25rem;
+}
+.container {
+  width: 90%;
+  margin: 0 auto;
+}
+
+.row {
+  display: flex;
+}
