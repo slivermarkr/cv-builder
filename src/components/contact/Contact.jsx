@@ -1,15 +1,17 @@
 import "./contact.css";
-export default function Contact({ firstName, lastName }) {
+export default function Contact({ contact }) {
   return (
     <div className="container">
       <section className="contacts">
         <p className="contact-name gap-1">
-          {firstName} {lastName}
+          {contact.firstName} {contact.lastName}
         </p>
         <div className="contact-info row">
-          <p className="address">San Francisco, California 1900</p>
-          <p className="phone">555-555-555</p>
-          <p className="email">ashley.williams@gmail.com</p>
+          <p className="address">
+            {contact.city}, {contact.state} {contact.zipCode}
+          </p>
+          <p className="phone">{contact.phone}</p>
+          <p className="email">{contact.email}</p>
         </div>
       </section>
     </div>
