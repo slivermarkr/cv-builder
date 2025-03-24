@@ -2,13 +2,14 @@ import { useState } from "react";
 import "./App.css";
 /**
  *  const formArray = [
- * {title: '',id: 0,childrenInput: [{type, id, label, value}],},
+ * {title: '',id: 0,fields: [{type, id, label, value}],},
  * ]
  */
 const formsInit = [
   {
     title: "Contact Section",
-    childrenInput: [
+    className: "contact-form",
+    fields: [
       {
         type: "text",
         id: "first-name",
@@ -61,7 +62,8 @@ const formsInit = [
   },
   {
     title: "Career Summary Section",
-    childrenInput: [
+    className: "career-form",
+    fields: [
       {
         type: "textarea",
         id: "career-summary",
@@ -74,13 +76,45 @@ const formsInit = [
   },
   {
     title: "Work Experience Section",
-    childrenInput: [
-      { type: "text", id: "try", label: "Put something in here: ", value: "" },
+    className: "work-form",
+    isDynamic: true,
+    fields: [
+      {
+        type: "text",
+        id: "exp-job--title",
+        label: "Job Title: ",
+        value: "",
+        placeholder: "District Manager",
+      },
+      {
+        type: "date",
+        id: "exp-job--start",
+        label: "Year Started: ",
+        value: "",
+      },
+      { type: "date", id: "exp-job--end", label: "Year Ended: ", value: "" },
+      {
+        type: "text",
+        id: "exp-company--name",
+        label: "Company Name: ",
+        value: "",
+        placeholder: "Verizon Wireless",
+      },
+      {
+        type: "text",
+        id: "exp-company--location",
+        label: "Location: ",
+        value: "",
+        placeholder: "San Francisco, CA",
+      },
+      // TODO:
+      // list of comapny experience details
     ],
   },
   {
     title: "Education Section",
-    childrenInput: [
+    className: "education-form",
+    fields: [
       { type: "text", id: "try", label: "Put something in here: ", value: "" },
     ],
   },
@@ -104,22 +138,21 @@ export default function App() {
     }
   }
 
-  function handleInputChange(e) {
-    const targetForm = forms[currFormIndex];
-    const text = e.target.value;
+  function onAddInputField() {}
 
-    setForms(
-      forms.map((form) => {
-        if (form.id === targetForm.id) {
-          targetForm.childrenInput.map((child) => {
-            if (child.id === e.target.id) {
-              child.value = text;
+  function handleInputChange(e, formIndex, fieldIndex) {
+    const { value } = e.target;
+    setForms((prevForms) =>
+      prevForms.map((form, idx) =>
+        idx === formIndex
+          ? {
+              ...form,
+              fields: form.fields.map((field, fIdx) =>
+                fIdx === fieldIndex ? { ...field, value } : field
+              ),
             }
-            return child;
-          });
-        }
-        return form;
-      })
+          : form
+      )
     );
   }
 
@@ -127,50 +160,41 @@ export default function App() {
     <div className="container">
       <button onClick={handleBackClick}>Back</button>
       <button onClick={handleNextClick}>Next</button>
-      {forms.map((form, id) => {
-        if (id === currFormIndex) {
-          return (
-            <Form
-              name={form.title}
-              key={id}
-              onChange={handleInputChange}
-              childArray={form.childrenInput}
-            />
-          );
-        }
-      })}
+      <Form
+        form={forms[currFormIndex]}
+        onChange={handleInputChange}
+        formIndex={currFormIndex}
+      />
     </div>
   );
 }
 
-function Form({ name, id, onChange, childArray }) {
+function Form({ form, formIndex, onChange, onAddInputField }) {
   return (
-    <form id={id}>
-      <h3>{name}</h3>
-      {childArray.map((child, index) => {
+    <form id={form.id} className={form.className}>
+      <h3>{form.title}</h3>
+      {form.isDynamic && <button onClick={onAddInputField}>Add Field</button>}
+      {form.fields.map((field, index) => {
         return (
           <p key={index}>
-            <label htmlFor={child.id}>{child.label}</label>
-            {child.type === "textarea" ? (
+            <label htmlFor={field.id}>{field.label}</label>
+            {field.type === "textarea" ? (
               <textarea
-                placeholder={child.placeholder ?? child.placeholder}
-                datatype={index}
-                onChange={onChange}
-                value={child.value}
-                name={child.name}
-                id={child.id}
-                maxLength={child.att["maxLength"] ?? child.att["maxLength"]}
-                minLength={child.att["minLength"] ?? child.att["minLength"]}
+                {...field.att}
+                onChange={(e) => onChange(e, formIndex, index)}
+                value={field.value}
+                name={field.name}
+                id={field.id}
               ></textarea>
             ) : (
               <input
-                placeholder={child.placeholder ?? child.placeholder}
+                placeholder={field.placeholder ?? field.placeholder}
                 datatype={index}
-                onChange={onChange}
-                type={child.type}
-                value={child.value}
-                name={child.name}
-                id={child.id}
+                onChange={(e) => onChange(e, formIndex, index)}
+                type={field.type}
+                value={field.value}
+                name={field.name}
+                id={field.id}
               />
             )}
           </p>
