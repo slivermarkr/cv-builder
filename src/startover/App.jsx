@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "./App.css";
 /**
  *  const formArray = [
  * {title: '',id: 0,childrenInput: [{type, id, label, value}],},
@@ -6,25 +7,79 @@ import { useState } from "react";
  */
 const formsInit = [
   {
-    title: "Contact",
+    title: "Contact Section",
+    childrenInput: [
+      {
+        type: "text",
+        id: "first-name",
+        label: "Firstname: ",
+        value: "",
+        name: "firstname",
+        placeholder: "Ashley",
+      },
+      {
+        type: "text",
+        id: "last-name",
+        label: "Lastname: ",
+        value: "",
+        name: "lastname",
+        placeholder: "Williams",
+      },
+      {
+        type: "text",
+        id: "state",
+        label: "State: ",
+        value: "",
+        name: "state",
+        placeholder: "California",
+      },
+      {
+        type: "text",
+        id: "city",
+        label: "City: ",
+        value: "",
+        name: "city",
+        placeholder: "San Francisco",
+      },
+      {
+        type: "email",
+        id: "email",
+        label: "Email: ",
+        value: "",
+        name: "email",
+        placeholder: "ashley.williams@gmail.com",
+      },
+      {
+        type: "tel",
+        id: "phone",
+        label: "Phone #: ",
+        value: "",
+        name: "phone",
+        placeholder: "555-555-555",
+      },
+    ],
+  },
+  {
+    title: "Career Summary Section",
+    childrenInput: [
+      {
+        type: "textarea",
+        id: "career-summary",
+        label: "Career Summary / Objectives: ",
+        placeholder: "Summarize your career or state your career objectives",
+        value: "",
+        att: { maxLength: 60, minLength: 20 },
+      },
+    ],
+  },
+  {
+    title: "Work Experience Section",
     childrenInput: [
       { type: "text", id: "try", label: "Put something in here: ", value: "" },
     ],
   },
   {
-    title: "Work Experience",
-    childrenInput: [
-      { type: "text", id: "try", label: "Put something in here: ", value: "" },
-    ],
-  },
-  {
-    title: "Career Summary",
-    childrenInput: [
-      { type: "text", id: "try", label: "Put something in here: ", value: "" },
-    ],
-  },
-  {
-    title: "Education",
+    title: "Education Section",
     childrenInput: [
       { type: "text", id: "try", label: "Put something in here: ", value: "" },
     ],
@@ -35,13 +90,13 @@ export default function App() {
   const [currFormIndex, setCurrForm] = useState(0);
   const [forms, setForms] = useState(formsInit);
 
-  console.log(currFormIndex);
   function handleNextClick() {
     setCurrForm((curr) => curr + 1);
     if (currFormIndex >= forms.length - 1) {
       setCurrForm(0);
     }
   }
+
   function handleBackClick() {
     setCurrForm((curr) => curr - 1);
     if (currFormIndex <= 0) {
@@ -87,6 +142,7 @@ export default function App() {
     </div>
   );
 }
+
 function Form({ name, id, onChange, childArray }) {
   return (
     <form id={id}>
@@ -94,15 +150,29 @@ function Form({ name, id, onChange, childArray }) {
       {childArray.map((child, index) => {
         return (
           <p key={index}>
-            <label htmlFor={child.id}>Put some input here: </label>
-            <input
-              datatype={index}
-              onChange={onChange}
-              type={child.type}
-              value={child.value}
-              name=""
-              id={child.id}
-            />
+            <label htmlFor={child.id}>{child.label}</label>
+            {child.type === "textarea" ? (
+              <textarea
+                placeholder={child.placeholder ?? child.placeholder}
+                datatype={index}
+                onChange={onChange}
+                value={child.value}
+                name={child.name}
+                id={child.id}
+                maxLength={child.att["maxLength"] ?? child.att["maxLength"]}
+                minLength={child.att["minLength"] ?? child.att["minLength"]}
+              ></textarea>
+            ) : (
+              <input
+                placeholder={child.placeholder ?? child.placeholder}
+                datatype={index}
+                onChange={onChange}
+                type={child.type}
+                value={child.value}
+                name={child.name}
+                id={child.id}
+              />
+            )}
           </p>
         );
       })}
